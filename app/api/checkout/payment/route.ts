@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import stripe from '@/lib/stripe';
+import { getStripe } from '@/lib/stripe';
 import { reserveTickets } from '@/lib/state';
 
 interface PaymentRequest {
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntent = await getStripe().paymentIntents.create({
       amount: qty * 2800,
       currency: 'twd',
       payment_method_types: ['card'],
