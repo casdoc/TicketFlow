@@ -1,0 +1,13 @@
+# Never include local env files in Docker image
+# Bug 3 depends on .env.local NOT being in the container
+.env.local
+.env*.local
+.env
+
+node_modules
+.next
+.git
+.gitignore
+*.md
+Dockerfile
+.dockerignore
