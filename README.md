@@ -35,6 +35,7 @@ cp .env.production.example .env.local
 |----------|-------------|
 | `Stripe_CHANNEL_SECRET` | Stripe secret key |
 | `NEXT_PUBLIC_BASE_URL` | Public base URL of the service |
+| `STATUS_PROVIDER_URL` | URL of the external status-provider Worker (e.g. `https://inferfix-status-provider.YOUR_SUBDOMAIN.workers.dev/status`) |
 
 ---
 
@@ -60,5 +61,6 @@ gcloud run deploy ticketflow \
   --region asia-east1 \
   --allow-unauthenticated \
   --set-env-vars="NEXT_PUBLIC_BASE_URL=https://YOUR_SERVICE_URL.run.app" \
-  --set-env-vars="Stripe_CHANNEL_SECRET=sk_live_your_key_here"
+  --set-env-vars="Stripe_CHANNEL_SECRET=sk_live_your_key_here" \
+  --set-env-vars="STATUS_PROVIDER_URL=https://inferfix-status-provider.YOUR_SUBDOMAIN.workers.dev/status"
 ```

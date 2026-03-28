@@ -1,12 +1,6 @@
 // Module-level singletons — persist across requests within the same Node.js process.
 
-let chaosMode = false;
 let availableTickets = 500;
-
-export const getChaosMode = (): boolean => chaosMode;
-export const setChaosMode = (v: boolean): void => {
-  chaosMode = v;
-};
 
 export const getAvailableTickets = (): number => availableTickets;
 

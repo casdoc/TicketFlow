@@ -51,3 +51,4 @@ jobs:
           env_vars: |
             NEXT_PUBLIC_BASE_URL=${{ secrets.CLOUD_RUN_URL }}
             Stripe_CHANNEL_SECRET=${{ secrets.STRIPE_CHANNEL_SECRET }}
+            STATUS_PROVIDER_URL=${{ secrets.STATUS_PROVIDER_URL }}

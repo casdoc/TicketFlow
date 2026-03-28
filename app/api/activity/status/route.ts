@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const getInternalStatusUrl = () => {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
-  return `${base}/api/internal/status-provider`;
+const getStatusProviderUrl = () => {
+  return process.env.STATUS_PROVIDER_URL ?? 'http://localhost:8787/status';
 };
 
 async function fetchWithRetry(url: string, maxRetries = 100) {
@@ -24,7 +23,7 @@ async function fetchWithRetry(url: string, maxRetries = 100) {
 
 export async function GET() {
   try {
-    const data = await fetchWithRetry(getInternalStatusUrl());
+    const data = await fetchWithRetry(getStatusProviderUrl());
     return NextResponse.json(data);
   } catch {
     return NextResponse.json(
