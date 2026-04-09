@@ -4,7 +4,7 @@ const getStatusProviderUrl = () => {
   return process.env.STATUS_PROVIDER_URL ?? 'http://localhost:8787/status';
 };
 
-async function fetchWithRetry(url: string, maxRetries = 100) {
+async function fetchWithRetry(url: string, maxRetries = 5) {
   let lastError: unknown;
 
   for (let i = 0; i < maxRetries; i++) {
@@ -14,6 +14,9 @@ async function fetchWithRetry(url: string, maxRetries = 100) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.json();
     } catch (e) {
+      await new Promise(r =>
+        setTimeout(r, Math.min(1000, Math.pow(2, i) * 100) + Math.random() * 50)
+      );
       lastError = e;
     }
   }
