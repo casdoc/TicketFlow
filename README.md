@@ -2,6 +2,7 @@
 
 A high-performance concert ticket booking platform built with Next.js. Supports real-time inventory tracking, discount code validation, and secure payment processing via Stripe.
 
+
 ---
 
 ## Tech Stack
