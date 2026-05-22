@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Sorry, tickets are sold out.', code: 'SOLD_OUT' }, { status: 409 });
   }
 
-  if (isMockKey(process.env.Stripe_CHANEL_SECRET)) {
+  if (isMockKey(process.env.Stripe_CHANNEL_SECRET || process.env.Stripe_CHANEL_SECRET)) {
     const orderId = `NV2026-${Date.now().toString(36).toUpperCase()}`;
     return NextResponse.json({
       success: true,
