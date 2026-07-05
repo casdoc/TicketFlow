@@ -65,3 +65,4 @@ gcloud run deploy ticketflow \
   --set-env-vars="Stripe_CHANNEL_SECRET=sk_live_your_key_here" \
   --set-env-vars="STATUS_PROVIDER_URL=https://inferfix-status-provider.YOUR_SUBDOMAIN.workers.dev/status"
 ```
+// Corvo test Sun Jul  5 11:33:08 UTC 2026
