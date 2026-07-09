@@ -40,36 +40,50 @@ export async function POST(request: Request) {
     });
   }
 
-  try {
-    const paymentIntent = await getStripe().paymentIntents.create({
-      amount: qty * 2800,
-      currency: 'twd',
-      payment_method_types: ['card'],
-      description: `NOVA World Tour 2026 Taipei — ${qty} ticket(s)`,
-      metadata: {
-        qty: String(qty),
-        couponCode: couponCode ?? 'none',
-        cardholderName: cardName,
-      },
-    });
+  const MAX_RETRIES = 2;
+  const RETRY_BASE_MS = 1000;
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-    const orderId = `NV2026-${Date.now().toString(36).toUpperCase()}`;
+  let lastError: unknown;
 
-    return NextResponse.json({
-      success: true,
-      orderId,
-      paymentIntentId: paymentIntent.id,
-      amount: paymentIntent.amount,
-      currency: paymentIntent.currency,
-      status: paymentIntent.status,
-    });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Payment processing failed';
-    console.error('[payment] Stripe error:', error);
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const paymentIntent = await getStripe().paymentIntents.create({
+        amount: qty * 2800,
+        currency: 'twd',
+        payment_method_types: ['card'],
+        description: `NOVA World Tour 2026 Taipei — ${qty} ticket(s)`,
+        metadata: {
+          qty: String(qty),
+          couponCode: couponCode ?? 'none',
+          cardholderName: cardName,
+        },
+      });
 
-    return NextResponse.json(
-      { error: `Payment failed: ${message}`, code: 'PAYMENT_ERROR' },
-      { status: 500 }
-    );
+      const orderId = `NV2026-${Date.now().toString(36).toUpperCase()}`;
+
+      return NextResponse.json({
+        success: true,
+        orderId,
+        paymentIntentId: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        status: paymentIntent.status,
+      });
+    } catch (error: unknown) {
+      lastError = error;
+      console.warn(`[payment] Stripe attempt ${attempt + 1}/${MAX_RETRIES + 1} failed:`, error instanceof Error ? error.message : error);
+      if (attempt < MAX_RETRIES) {
+        await sleep(RETRY_BASE_MS * (attempt + 1));
+      }
+    }
   }
+
+  const message = lastError instanceof Error ? lastError.message : 'Payment processing failed';
+  console.error('[payment] Stripe error after all retries:', lastError);
+
+  return NextResponse.json(
+    { error: `Payment failed: ${message}`, code: 'PAYMENT_ERROR' },
+    { status: 500 }
+  );
 }
