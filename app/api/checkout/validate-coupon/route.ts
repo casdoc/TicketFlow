@@ -10,7 +10,7 @@ const VALID_CODES: Record<string, number> = {
   'SUPERFAN': 0.15,
 };
 
-const DISCOUNT_CODE_REGEX = /^([a-zA-Z0-9]+-?)*$/;
+const DISCOUNT_CODE_REGEX = /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/;
 
 export async function POST(request: Request) {
   const body = await request.json() as ValidateCouponRequest;
